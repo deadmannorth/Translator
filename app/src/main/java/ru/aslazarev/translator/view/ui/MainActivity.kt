@@ -1,7 +1,10 @@
 package ru.aslazarev.translator.view.ui
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
@@ -13,36 +16,37 @@ import ru.aslazarev.translator.presentation.MainPresenter
 class MainActivity : MvpAppCompatActivity(), MainView {
     lateinit var binding: ActivityMainBinding
     private val presenter by moxyPresenter { MainPresenter() }
-    private var adapter: MainAdapter? = null
+    private var adapterML: MainListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.searchFab.setOnClickListener {
-            val searchDialogFragment = SearchDialogFragment.newInstance()
-            searchDialogFragment.setOnSearchClickListener(object :
-                SearchDialogFragment.OnSearchClickListener {
-                override fun onClick(searchWord: String) {
-                    presenter.getData(searchWord)
-                }
-            })
-            searchDialogFragment.show(supportFragmentManager, BOTTOM_SHEET_FRAGMENT_DIALOG_TAG)
+
+
+        binding.inputSearch.setEndIconOnClickListener {
+            presenter.getData(binding.inputEditText.text.toString())
+            val inputManager: InputMethodManager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+
         }
+
+        binding.mainActivityRecyclerview.layoutManager = LinearLayoutManager(applicationContext)
+        adapterML = MainListAdapter { }
+        binding.mainActivityRecyclerview.adapter = adapterML
     }
 
     override fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
                 val dataModel = appState.data
+                Log.d("SIZE_LIST_APP_STATE", "${dataModel.size}")
                 if (dataModel.isEmpty()) {
                     showErrorScreen(getString(R.string.empty_server_response_on_success))
                 } else {
                     showViewSuccess()
-                    binding.mainActivityRecyclerview.layoutManager = LinearLayoutManager(this)
-                    adapter = MainAdapter(dataModel)
-                    binding.mainActivityRecyclerview.adapter = adapter
+                    adapterML!!.submitList(dataModel)
                 }
             }
             is AppState.Loading -> {

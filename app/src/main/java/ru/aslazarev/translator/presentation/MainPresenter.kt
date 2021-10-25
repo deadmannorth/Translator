@@ -1,5 +1,6 @@
 package ru.aslazarev.translator.presentation
 
+import android.util.Log
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -18,12 +19,6 @@ class MainPresenter: MvpPresenter<MainView>() {
         super.onFirstViewAttach()
     }
 
-    class DictionaryList{
-        val strings = mutableListOf<DataModel>()
-    }
-
-    val dictionaryList = DictionaryList()
-
     fun getData(word: String){
         compositeDisposable.add(
             repo.getData(word)
@@ -31,9 +26,7 @@ class MainPresenter: MvpPresenter<MainView>() {
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState.renderData(AppState.Loading(null)) }
             .subscribe ({
-                        dictionaryList.strings.clear()
-                        dictionaryList.strings.addAll(it)
-                        viewState?.renderData(AppState.Success(dictionaryList.strings))},
+                        viewState?.renderData(AppState.Success(it))},
                 {viewState.renderData(AppState.Error(it))}))
 
     }

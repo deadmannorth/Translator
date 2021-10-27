@@ -36,4 +36,12 @@ class MainViewModel @Inject constructor(
 
         override fun onComplete() = Unit
     }
+
+    override fun saveState() {
+        super.saveState()
+    }
+
+    override fun loadState() {
+        super.loadState()
+    }
 }

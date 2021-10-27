@@ -16,4 +16,16 @@ abstract class BaseActivity<T: AppState>: AppCompatActivity() {
 
     abstract fun renderData(appState: T)
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        model.saveState()
+
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        model.loadState()
+
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+
 }

@@ -8,14 +8,12 @@ import ru.aslazarev.translator.model.DataModel
 import ru.aslazarev.translator.model.remote.RemoteData
 import ru.aslazarev.translator.model.remote.RepoImpl
 import ru.aslazarev.translator.view.base.BaseViewModel
+import javax.inject.Inject
 import kotlin.concurrent.thread
 
-class MainViewModel (
-    private val interactor: MainInteractor = MainInteractor(
-        remoteRepository = RepoImpl(RemoteData()),
-        localRepository = RepoImpl(RemoteData())
-    )
-        ): BaseViewModel<AppState>() {
+class MainViewModel @Inject constructor(
+    private val interactor: MainInteractor
+    ): BaseViewModel<AppState>() {
 
     fun getWordDescriptions(word: String, isOnline: Boolean) {
         compositeDisposable.add(
@@ -33,7 +31,7 @@ class MainViewModel (
         }
 
         override fun onError(e: Throwable) {
-            stateLiveData.postValue(AppState.Error(e))
+            stateLiveData.value = AppState.Error(e)
         }
 
         override fun onComplete() = Unit

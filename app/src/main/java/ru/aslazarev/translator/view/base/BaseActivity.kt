@@ -10,7 +10,8 @@ abstract class BaseActivity<T: AppState>: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        model.getStateLiveData().observe(this) {renderData(it)}
+
+        model.getStateLiveData().observe(this) { renderData(it) }
     }
 
     abstract fun renderData(appState: T)

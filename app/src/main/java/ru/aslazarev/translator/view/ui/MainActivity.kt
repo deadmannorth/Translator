@@ -5,28 +5,36 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import moxy.MvpAppCompatActivity
-import moxy.ktx.moxyPresenter
+import dagger.android.AndroidInjection
 import ru.aslazarev.translator.R
 import ru.aslazarev.translator.databinding.ActivityMainBinding
 import ru.aslazarev.translator.model.AppState
-import ru.aslazarev.translator.presentation.MainPresenter
+import ru.aslazarev.translator.view.base.BaseActivity
+import javax.inject.Inject
 
-class MainActivity : MvpAppCompatActivity(), MainView {
+class MainActivity : BaseActivity<AppState>(), ru.aslazarev.translator.View {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     lateinit var binding: ActivityMainBinding
-    private val presenter by moxyPresenter { MainPresenter() }
     private var adapterML: MainListAdapter? = null
 
+    override val model: MainViewModel by lazy {viewModelFactory.create(MainViewModel::class.java)}
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
+
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
-
         binding.inputSearch.setEndIconOnClickListener {
-            presenter.getData(binding.inputEditText.text.toString())
+            model.getWordDescriptions(binding.inputEditText.text.toString(), true)
             val inputManager: InputMethodManager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
 
@@ -70,7 +78,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         showViewError()
         binding.errorTextview.text = error ?: getString(R.string.undefined_error)
         binding.reloadButton.setOnClickListener {
-            presenter.getData("hi")
+            model.getWordDescriptions("hi", true)
         }
     }
 

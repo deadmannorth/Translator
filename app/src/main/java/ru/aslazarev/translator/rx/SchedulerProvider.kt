@@ -6,7 +6,7 @@ import io.reactivex.schedulers.Schedulers
 
 class SchedulerProvider: ISchedulerProvider {
 
-    override val io: Scheduler = AndroidSchedulers.mainThread()
-    override val ui: Scheduler = Schedulers.io()
+    override val io: Scheduler = Schedulers.io()
+    override val ui: Scheduler = AndroidSchedulers.mainThread()
 
 }

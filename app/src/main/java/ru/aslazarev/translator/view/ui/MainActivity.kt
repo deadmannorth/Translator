@@ -5,30 +5,22 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.android.AndroidInjection
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.aslazarev.translator.R
 import ru.aslazarev.translator.databinding.ActivityMainBinding
 import ru.aslazarev.translator.model.AppState
 import ru.aslazarev.translator.view.base.BaseActivity
-import javax.inject.Inject
 
 class MainActivity : BaseActivity<AppState>(), ru.aslazarev.translator.View {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var binding: ActivityMainBinding
     private var adapterML: MainListAdapter? = null
 
-    override val model: MainViewModel by lazy {viewModelFactory.create(MainViewModel::class.java)}
+    override val model: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
-
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

@@ -1,5 +1,6 @@
 package ru.aslazarev.translator.view.base
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -26,9 +27,11 @@ open class BaseViewModel <T: AppState>(
 
     open fun saveState(){
         state.set("LIVE_DATA", stateLiveData.value)
+        Log.d("LIVE_DATA", "${stateLiveData.value}")
     }
 
     open fun loadState(){
         state.getLiveData("LIVE_DATA", stateLiveData.value)
+        Log.d("LIVE_DATA", "${stateLiveData.value}")
     }
 }

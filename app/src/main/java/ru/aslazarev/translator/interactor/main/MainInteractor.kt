@@ -5,9 +5,8 @@ import ru.aslazarev.translator.Interactor
 import ru.aslazarev.translator.Repository
 import ru.aslazarev.translator.model.AppState
 import ru.aslazarev.translator.model.DataModel
-import javax.inject.Inject
 
-class MainInteractor @Inject constructor(
+class MainInteractor (
     private val remoteRepository: Repository<List<DataModel>>,
     private val localRepository: Repository<List<DataModel>>
 ): Interactor<AppState> {

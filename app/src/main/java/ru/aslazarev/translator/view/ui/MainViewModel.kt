@@ -1,17 +1,11 @@
 package ru.aslazarev.translator.view.ui
 
 import io.reactivex.observers.DisposableObserver
-import ru.aslazarev.translator.Repository
 import ru.aslazarev.translator.interactor.main.MainInteractor
 import ru.aslazarev.translator.model.AppState
-import ru.aslazarev.translator.model.DataModel
-import ru.aslazarev.translator.model.remote.RemoteData
-import ru.aslazarev.translator.model.remote.RepoImpl
 import ru.aslazarev.translator.view.base.BaseViewModel
-import javax.inject.Inject
-import kotlin.concurrent.thread
 
-class MainViewModel @Inject constructor(
+class MainViewModel (
     private val interactor: MainInteractor
     ): BaseViewModel<AppState>() {
 

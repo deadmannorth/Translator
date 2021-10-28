@@ -7,5 +7,5 @@ import ru.aslazarev.translator.model.DataModel
 
 interface ApiService {
     @GET("words/search")
-    fun search(@Query("search") word: String): Observable<List<DataModel>>
+    suspend fun search(@Query("search") word: String): List<DataModel>
 }

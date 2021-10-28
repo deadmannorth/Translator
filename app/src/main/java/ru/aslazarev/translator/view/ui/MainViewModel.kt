@@ -1,6 +1,7 @@
 package ru.aslazarev.translator.view.ui
 
 import io.reactivex.observers.DisposableObserver
+import kotlinx.coroutines.launch
 import ru.aslazarev.translator.interactor.main.MainInteractor
 import ru.aslazarev.translator.model.AppState
 import ru.aslazarev.translator.view.base.BaseViewModel
@@ -10,13 +11,14 @@ class MainViewModel (
     ): BaseViewModel<AppState>() {
 
     fun getWordDescriptions(word: String, isOnline: Boolean) {
-        compositeDisposable.add(
-            interactor.getData(word, isOnline)
-                .subscribeOn(schedulerProvider.io)
-                .observeOn(schedulerProvider.ui)
-                .doOnSubscribe { stateLiveData.value = AppState.Loading(null) }
-                .subscribeWith(getObserver())
-        )
+        viewModelScope.launch {
+            try {
+                val data = interactor.getData(word, isOnline)
+                stateLiveData.value = data
+            } catch (e: Exception){
+                stateLiveData.value = AppState.Error(e)
+            }
+        }
     }
 
     private fun getObserver() = object : DisposableObserver<AppState>() {

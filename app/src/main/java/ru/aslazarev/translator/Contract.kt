@@ -8,15 +8,15 @@ interface View {
 }
 
 interface Interactor<T> {
-    fun getData(word: String, isRemoteSource: Boolean): Observable<T>
+    suspend fun getData(word: String, isRemoteSource: Boolean): T
 }
 
 interface Repository<T> {
 
-    fun getData(word: String): Observable<T>
+    suspend fun getData(word: String): T
 }
 
 interface DataSource<T> {
 
-    fun getData(word: String): Observable<T>
+    suspend fun getData(word: String): T
 }

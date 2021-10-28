@@ -1,28 +1,24 @@
 package ru.aslazarev.translator.view.ui
 
 import io.reactivex.observers.DisposableObserver
-import ru.aslazarev.translator.Repository
+import kotlinx.coroutines.launch
 import ru.aslazarev.translator.interactor.main.MainInteractor
 import ru.aslazarev.translator.model.AppState
-import ru.aslazarev.translator.model.DataModel
-import ru.aslazarev.translator.model.remote.RemoteData
-import ru.aslazarev.translator.model.remote.RepoImpl
 import ru.aslazarev.translator.view.base.BaseViewModel
-import javax.inject.Inject
-import kotlin.concurrent.thread
 
-class MainViewModel @Inject constructor(
+class MainViewModel (
     private val interactor: MainInteractor
     ): BaseViewModel<AppState>() {
 
     fun getWordDescriptions(word: String, isOnline: Boolean) {
-        compositeDisposable.add(
-            interactor.getData(word, isOnline)
-                .subscribeOn(schedulerProvider.io)
-                .observeOn(schedulerProvider.ui)
-                .doOnSubscribe { stateLiveData.value = AppState.Loading(null) }
-                .subscribeWith(getObserver())
-        )
+        viewModelScope.launch {
+            try {
+                val data = interactor.getData(word, isOnline)
+                stateLiveData.value = data
+            } catch (e: Exception){
+                stateLiveData.value = AppState.Error(e)
+            }
+        }
     }
 
     private fun getObserver() = object : DisposableObserver<AppState>() {

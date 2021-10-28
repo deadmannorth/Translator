@@ -5,18 +5,19 @@ import ru.aslazarev.translator.Interactor
 import ru.aslazarev.translator.Repository
 import ru.aslazarev.translator.model.AppState
 import ru.aslazarev.translator.model.DataModel
-import javax.inject.Inject
 
-class MainInteractor @Inject constructor(
+class MainInteractor (
     private val remoteRepository: Repository<List<DataModel>>,
     private val localRepository: Repository<List<DataModel>>
 ): Interactor<AppState> {
 
-    override fun getData(word: String, isRemoteSource: Boolean): Observable<AppState> {
+    override suspend fun getData(word: String, isRemoteSource: Boolean): AppState {
         return if (isRemoteSource) {
-            remoteRepository.getData(word).map { AppState.Success(it) }
+            val data = remoteRepository.getData(word)
+            AppState.Success(data)
         } else {
-            localRepository.getData(word).map { AppState.Success(it) }
+            val data = localRepository.getData(word)
+            AppState.Success(data)
         }
     }
 }
